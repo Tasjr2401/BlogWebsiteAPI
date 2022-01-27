@@ -56,15 +56,22 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Create" />
     <Folder Include="Tables" />
     <Folder Include="TestScripts" />
+    <Folder Include="Stored Procedures" />
+    <Folder Include="Stored Procedures\Create" />
+    <Folder Include="Stored Procedures\GetUserInfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Create\AddRole.sql" />
     <Build Include="Tables\Roles.sql" />
     <None Include="Tables\UserLogIn.sql" />
     <None Include="Tables\Users.sql" />
     <None Include="TestScripts\GetAllRoles.sql" />
+    <None Include="Stored Procedures\GetUserInfo\UserLogInPasswordCheck.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="TestScripts\GetRole.sql" />
+    <None Include="Stored Procedures\Create\AddRole.sql" />
+    <None Include="Stored Procedures\Create\CreateUser.sql" />
   </ItemGroup>
 </Project>
