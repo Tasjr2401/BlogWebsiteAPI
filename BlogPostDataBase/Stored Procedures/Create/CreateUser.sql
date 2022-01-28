@@ -18,7 +18,4 @@ AS
 	INSERT INTO dbo.UserLogIn (Username, Password, Salt, UserId)
 	VALUES (@Username, @Password, @Salt, @userId);
 
-	SELECT Username, Firstname, Lastname, Role
-	FROM dbo.Users WHERE Id = @userId;
-
 RETURN;

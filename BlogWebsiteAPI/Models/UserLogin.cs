@@ -2,7 +2,8 @@
 {
     public class UserLogin
     {
-        public UserLogin(string userName, string password, int )
+        //Class Unnecessary at current moment come back to later
+        public UserLogin(string userName, string password)
         {
 
         }
