@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using BlogWebsiteAPI.Requests;
 using Microsoft.AspNetCore.Authorization;
+using BlogWebsiteAPI.Requests.UserRequests;
 
 namespace BlogWebsiteAPI.Controllers
 {
@@ -37,6 +38,13 @@ namespace BlogWebsiteAPI.Controllers
 			return _mediator.Send(request);
 		}
 
+		[HttpPost]
+		[Route("CreateUser")]
+		public async Task<IActionResult> CreateUser(CreateUser.Request request)
+        {
+			return Ok(await _mediator.Send(request));
+        }
+
 		[HttpGet]
 		[Route("UserInfo")]
 		[Authorize]
@@ -48,9 +56,14 @@ namespace BlogWebsiteAPI.Controllers
 		[HttpGet]
 		[Route("AdminCheck")]
 		[Authorize(Roles = "Admin")]
-		public Task<RoleCheck.Response> AdminCheck(RoleCheck.Request request)
+		public async Task<IActionResult> AdminCheck(RoleCheck.Request request)
 		{
-			return _mediator.Send(request);
+			if (request == null)
+            {
+				return BadRequest("No data provided. You are really smart. Try again");
+            }
+
+			return Ok(await _mediator.Send(request));
 		}
 	}
 }
