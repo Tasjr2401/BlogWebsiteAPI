@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[UserLogInPasswordCheck]
 	@Username VARCHAR(100)
 AS
-	SELECT Password FROM dbo.UserLogIn
+	SELECT Password, salt, UserId FROM dbo.UserLogIn
 	WHERE Username = @Username;
 RETURN;

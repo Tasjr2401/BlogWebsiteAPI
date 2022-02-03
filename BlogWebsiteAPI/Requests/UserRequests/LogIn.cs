@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BlogWebsiteAPI.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,12 +15,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BlogWebsiteAPI.Requests
+namespace BlogWebsiteAPI.Requests.UserRequests
 {
 	public class LogIn
 	{
 		public class Request : IRequest<Response>
 		{
+			public Request(string username, string password)
+            {
+				Username = username;
+				Password = password;
+            }
 			public string Username { get; set; }
 			public string Password { get; set; }
 		}
@@ -27,49 +33,54 @@ namespace BlogWebsiteAPI.Requests
 		public class Handler : IRequestHandler<Request, Response>
 		{
             private readonly IConfiguration _config;
-            private readonly IHttpContextAccessor _httpAccessor;
+            private readonly IUserDataService _dataService;
 
-			public Handler(IHttpContextAccessor httpAccessor, IConfiguration config)
+            public Handler(IConfiguration config, IUserDataService dataService)
 			{
 				_config = config;
-				_httpAccessor = httpAccessor;
+				_dataService = dataService;
 			}
-			public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
+			public Task<Response> Handle(Request request, CancellationToken cancellationToken)
 			{
-				if(request.Username == "Tim" && request.Password == "Mike")
+				if (!_dataService.UsernameExistsCheck(request.Username))
+					throw new Exception("No Existing User");
+
+				var passwordCheckData = _dataService.GetPasswordVerificationRequirements(request.Username);
+				var user = _dataService.GetUser(passwordCheckData.UserId);
+
+				if (UserRequestFunctions.PasswordHash(request.Password, passwordCheckData.Salt) != passwordCheckData.HashedPassword)
+					throw new Exception("Incorrect Password");
+
+				var claims = new List<Claim>()
 				{
-					var claims = new List<Claim>()
-					{
-						new Claim(ClaimTypes.NameIdentifier, request.Username),
-						new Claim(ClaimTypes.Name, "Tim Stopford"),
-						new Claim(ClaimTypes.Role, "Admin")
-					};
-					//var claimsIdentity = new ClaimsIdentity(claims);
-					//var principal = new ClaimsPrincipal(claimsIdentity);
-                    string issuer = _config.GetSection("Token").GetSection("Issuer").Value;
-                    string audience = _config.GetSection("Token").GetSection("Audience").Value;
-                    var signingCredentials = new SigningCredentials(
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                            _config.GetSection("Token")
-                            .GetSection("SecurityKey").Value)), SecurityAlgorithms.HmacSha256);
-                    var token = new JwtSecurityToken(
-                        issuer: issuer,
-                        audience: audience,
-                        claims: claims,
-						expires: DateTime.UtcNow.AddHours(2),
-                        signingCredentials: signingCredentials
-                        );
-                    try
-					{
-						//var tokenResult = await _httpAccessor.HttpContext.GetTokenAsync(JwtBearerDefaults.AuthenticationScheme, "Token");
-						return new Response(new JwtSecurityTokenHandler().WriteToken(token));
-					} 
-					catch(Exception e)
-					{
-						throw new Exception(e.Message);
-					}
+					new Claim(ClaimTypes.NameIdentifier, request.Username),
+					new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+					new Claim(ClaimTypes.Role, user.Role)
+				};
+
+				//var claimsIdentity = new ClaimsIdentity(claims);
+				//var principal = new ClaimsPrincipal(claimsIdentity);
+				string issuer = _config.GetSection("Token").GetSection("Issuer").Value;
+				string audience = _config.GetSection("Token").GetSection("Audience").Value;
+				var signingCredentials = new SigningCredentials(
+						new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+						_config.GetSection("Token")
+						.GetSection("SecurityKey").Value)), SecurityAlgorithms.HmacSha256);
+				var token = new JwtSecurityToken(
+					issuer: issuer,
+					audience: audience,
+					claims: claims,
+					expires: DateTime.UtcNow.AddHours(2),
+					signingCredentials: signingCredentials
+					);
+				try
+				{
+					return Task.FromResult(new Response(new JwtSecurityTokenHandler().WriteToken(token)));
 				}
-				throw new Exception("Incorrect Credentials");
+				catch (Exception e)
+				{
+					throw new Exception(e.Message);
+				}
 			}
 		}
 

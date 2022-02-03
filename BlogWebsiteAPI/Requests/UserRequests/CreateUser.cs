@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace BlogWebsiteAPI.Requests.UserRequests
 {
@@ -32,9 +33,15 @@ namespace BlogWebsiteAPI.Requests.UserRequests
             [Required]
             public string LastName { get; set; }    
 
-            public bool HasNullProperty()
+            public bool HasInvalidPropertys()
             {
-                if(Username == null || Password == null || FirstName == null || LastName == null)
+                if (Username == null || Password == null || FirstName == null || LastName == null)
+                    return true;
+                else if (Username.Length < 8 || !Regex.IsMatch(Username, @"\d"))
+                    return true;
+                else if (Password.Length < 8)
+                    return true;
+                else if (Regex.IsMatch(FirstName, @"\W") || Regex.IsMatch(LastName, @"\W"))
                     return true;
                 else
                     return false;
@@ -45,19 +52,18 @@ namespace BlogWebsiteAPI.Requests.UserRequests
         public class Handler : IRequestHandler<Request, Response>
         {
             private readonly IUserDataService _dataService;
-            private readonly IConfiguration _config;
 
-            public Handler(IConfiguration config, IUserDataService dataService)
+            public Handler(IUserDataService dataService)
             {
                 _dataService = dataService;
-                _config = config;
             }
             public Task<Response> Handle(Request request, CancellationToken cancellationToken)
             {
-                if (request == null || request.HasNullProperty())
-                {
+                if (request == null || request.HasInvalidPropertys())
                     return Task.FromResult(new Response(false));
-                }
+                else if (_dataService.UsernameExistsCheck(request.Username))
+                    return Task.FromResult(new Response(false));
+
                 var salt = RandomNumberGenerator.GetBytes(12);
                 var hashedPassword = UserRequestFunctions.PasswordHash(request.Password, salt);
                 var rowsAffected = _dataService.InsertNewUser(request, salt, hashedPassword);

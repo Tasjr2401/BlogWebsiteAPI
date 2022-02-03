@@ -19,6 +19,7 @@ using BlogWebsiteAPI.Requests;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BlogWebsiteAPI.Requests.UserRequests;
 
 namespace BlogWebsiteAPI
 {

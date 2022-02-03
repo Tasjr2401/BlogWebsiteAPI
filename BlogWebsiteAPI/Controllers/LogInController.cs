@@ -33,9 +33,11 @@ namespace BlogWebsiteAPI.Controllers
 
 		[HttpPost]
 		[Route("Validate")]
-		public Task<LogIn.Response> Validate(LogIn.Request request)
+		public async Task<IActionResult> LogInUser(LogIn.Request request)
 		{
-			return _mediator.Send(request);
+			if (request == null)
+				return BadRequest("Username and Password were not provided.");
+			return Ok(await _mediator.Send(request));
 		}
 
 		[HttpPost]
