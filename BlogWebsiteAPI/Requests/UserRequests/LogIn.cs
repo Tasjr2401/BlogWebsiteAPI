@@ -43,13 +43,13 @@ namespace BlogWebsiteAPI.Requests.UserRequests
 			public Task<Response> Handle(Request request, CancellationToken cancellationToken)
 			{
 				if (!_dataService.UsernameExistsCheck(request.Username))
-					throw new Exception("No Existing User");
+					return Task.FromResult(new Response(null, "User does not exist"));
 
 				var passwordCheckData = _dataService.GetPasswordVerificationRequirements(request.Username);
 				var user = _dataService.GetUser(passwordCheckData.UserId);
 
 				if (UserRequestFunctions.PasswordHash(request.Password, passwordCheckData.Salt) != passwordCheckData.HashedPassword)
-					throw new Exception("Incorrect Password");
+					return Task.FromResult(new Response(null, "Incorrect Password"));
 
 				var claims = new List<Claim>()
 				{
@@ -87,7 +87,13 @@ namespace BlogWebsiteAPI.Requests.UserRequests
 		public class Response
 		{
 			public string Token { get; set; }
-			public Response(string token)
+            public string ErrorMessage { get; set; }
+			public Response(string token, string errorMessage)
+            {
+				Token = token;
+				ErrorMessage = errorMessage;
+            }
+            public Response(string token)
 			{
 				Token = token;
 			}

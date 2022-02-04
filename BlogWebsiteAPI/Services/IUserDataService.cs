@@ -13,6 +13,7 @@ namespace BlogWebsiteAPI.Services
         public bool UsernameExistsCheck(string username);
         public UserPasswordCheckModel GetPasswordVerificationRequirements(string username);
         public User GetUser(int userId);
+        public int GetUserId(string username);
     }
 
     public class SqlUserDataService : IUserDataService
@@ -93,6 +94,30 @@ namespace BlogWebsiteAPI.Services
             }
 
             return user;
+        }
+
+        public int GetUserId(string username)
+        {
+            var connString = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
+            int result;
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "EXEC dbo.GetUserId @Username";
+                    cmd.Parameters.Add("@Username", SqlDbType.VarChar, 50).Value = username;
+                    try
+                    {
+                        result = (int)cmd.ExecuteScalar();
+                        conn.Close();
+                    } catch (Exception ex)
+                    {
+                        conn.Close();
+                        throw new Exception(ex.Message,ex);
+                    }
+                }
+            }
+            return result;
         }
 
         public int InsertNewUser(CreateUser.Request request, byte[] salt, string hashedPassword)

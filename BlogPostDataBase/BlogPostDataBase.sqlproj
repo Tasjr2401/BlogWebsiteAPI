@@ -69,6 +69,7 @@
     <None Include="TestScripts\GetAllRoles.sql" />
     <None Include="Stored Procedures\GetUserInfo\UserLogInPasswordCheck.sql" />
     <None Include="Stored Procedures\GetUserInfo\UsernameTakenCheck.sql" />
+    <None Include="Stored Procedures\GetUserInfo\GetUserId.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="TestScripts\GetRole.sql" />
