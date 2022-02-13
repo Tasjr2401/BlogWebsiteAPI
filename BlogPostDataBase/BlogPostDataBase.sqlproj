@@ -60,16 +60,23 @@
     <Folder Include="TestScripts" />
     <Folder Include="Stored Procedures" />
     <Folder Include="Stored Procedures\Create" />
-    <Folder Include="Stored Procedures\GetUserInfo" />
+    <Folder Include="Stored Procedures\Get" />
+    <Folder Include="Stored Procedures\Update" />
+    <Folder Include="Stored Procedures\Delete" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Roles.sql" />
     <None Include="Tables\UserLogIn.sql" />
     <None Include="Tables\Users.sql" />
     <None Include="TestScripts\GetAllRoles.sql" />
-    <None Include="Stored Procedures\GetUserInfo\UserLogInPasswordCheck.sql" />
-    <None Include="Stored Procedures\GetUserInfo\UsernameTakenCheck.sql" />
-    <None Include="Stored Procedures\GetUserInfo\GetUserId.sql" />
+    <None Include="Stored Procedures\Get\UserLogInPasswordCheck.sql" />
+    <None Include="Stored Procedures\Get\UsernameTakenCheck.sql" />
+    <None Include="Stored Procedures\Get\GetUserId.sql" />
+    <None Include="Stored Procedures\Get\GetUserRole.sql" />
+    <Build Include="Stored Procedures\Update\UpdateUserRole.sql" />
+    <None Include="Tables\RoleUpdate.sql" />
+    <None Include="Tables\DeactivatedUsers.sql" />
+    <None Include="Stored Procedures\Delete\DeactivateUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="TestScripts\GetRole.sql" />

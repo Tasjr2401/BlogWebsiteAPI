@@ -21,7 +21,10 @@ namespace BlogWebsiteAPI.Requests
 	{
 		public class Request : IRequest<Response>
 		{
+			public Request()
+            {
 
+            }
 		}
 
 		public class Handler : IRequestHandler<Request, Response>

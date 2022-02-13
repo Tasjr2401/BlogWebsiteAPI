@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[DeactivatedUsers]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(100, 1),
+	UserId INT NOT NULL FOREIGN KEY REFERENCES dbo.Users(Id) ON DELETE CASCADE,
+	DeactivatorId INT NOT NULL FOREIGN KEY REFERENCES dbo.Users(Id),
+	DateOfDeactivation DATE NOT NULL,
+	ReasonForDeactivation VARCHAR(500)
+)
