@@ -39,5 +39,15 @@ namespace BlogWebsiteAPI.Controllers
                 return BadRequest("Request was empty");
             return Ok(await _mediator.Send(request));
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("DeleteInactiveUser")]
+        public async Task<IActionResult> DeleteInactiveUser(DeleteInactiveUser.Request request)
+        {
+            if (request == null)
+                return BadRequest("Request was empty");
+            return Ok(await _mediator.Send(request));
+        }
     }
 }

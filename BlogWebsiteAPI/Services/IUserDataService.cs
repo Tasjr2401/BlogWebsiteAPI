@@ -19,19 +19,16 @@ namespace BlogWebsiteAPI.Services
         public string GetUserRole(int userId);
         public int UpdateUserRole(int promoterId, int userId, string newRole);
         public int DeactivateUser(int userId, int deactivatorId, string reasonForDeactivation);
+        public int DeleteUser(int userId);
     }
 
     public class SqlUserDataService : IUserDataService
     {
         private readonly string CONNECTIONSTRING;
         private readonly IConfiguration _config;
-        private readonly IMediator _mediator;
-        private readonly IUserDataService _dataService;
 
-        public SqlUserDataService(IConfiguration config, IMediator mediator, IUserDataService dataService)
+        public SqlUserDataService(IConfiguration config)
         {
-            _dataService = dataService;
-            _mediator = mediator;
             _config = config;
             CONNECTIONSTRING = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
         }
@@ -61,6 +58,29 @@ namespace BlogWebsiteAPI.Services
                 }
             }
 
+        }
+
+        public int DeleteUser(int userId)
+        {
+            using(SqlConnection connection = new SqlConnection(CONNECTIONSTRING))
+            {
+                using(SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "EXEC dbo.DeleteUser @UserId";
+                    command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+
+                    try
+                    {
+                        var result = command.ExecuteNonQuery();
+                        connection.Close();
+                        return result;
+                    } catch(Exception ex)
+                    {
+                        connection.Close();
+                        throw new Exception(ex.Message, ex);
+                    }
+                }
+            }
         }
 
         public UserPasswordCheckModel GetPasswordVerificationRequirements(string username)

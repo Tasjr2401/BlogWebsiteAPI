@@ -77,6 +77,7 @@
     <None Include="Tables\RoleUpdate.sql" />
     <None Include="Tables\DeactivatedUsers.sql" />
     <None Include="Stored Procedures\Delete\DeactivateUser.sql" />
+    <None Include="Stored Procedures\Delete\DeleteUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="TestScripts\GetRole.sql" />
