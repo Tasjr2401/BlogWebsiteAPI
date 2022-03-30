@@ -35,7 +35,7 @@ namespace BlogWebsiteAPI.Requests.UserRequests.CreateUserTests
             var handler = new CreateUser.Handler(_dataService.Object);
             _dataService.Setup(x =>
                 x.InsertNewUser(It.IsAny<CreateUser.Request>(), It.IsAny<byte[]>(), It.IsAny<string>()))
-                .Returns(1).Verifiable();
+                .Returns(2).Verifiable();
             _dataService.Setup(x => x.UsernameExistsCheck(It.IsAny<string>())).Returns(false).Verifiable();
 
             //Act

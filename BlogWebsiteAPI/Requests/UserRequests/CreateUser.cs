@@ -67,7 +67,7 @@ namespace BlogWebsiteAPI.Requests.UserRequests
                 var salt = RandomNumberGenerator.GetBytes(12);
                 var hashedPassword = UserRequestFunctions.PasswordHash(request.Password, salt);
                 var rowsAffected = _dataService.InsertNewUser(request, salt, hashedPassword);
-                if (rowsAffected > 0)
+                if (rowsAffected == 2)
                 {
                     return Task.FromResult(new Response(true));
                 }else

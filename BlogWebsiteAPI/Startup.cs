@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BlogWebsiteAPI.Requests.UserRequests;
+using BlogWebsiteAPI.Services;
 
 namespace BlogWebsiteAPI
 {
@@ -38,6 +39,8 @@ namespace BlogWebsiteAPI
 			services.AddControllers();
 
 			services.AddMediatR(typeof(LogIn.Handler).Assembly);
+
+			services.AddTransient<IUserDataService, SqlUserDataService>();
 
 			services.AddHttpContextAccessor();
 

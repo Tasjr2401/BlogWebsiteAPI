@@ -207,6 +207,7 @@ namespace BlogWebsiteAPI.Services
             //var connString = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
             using (SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
+                conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "EXEC dbo.CreateUser @Username, @Firstname, @Lastname, @Role, @Password, @Salt;";
@@ -264,8 +265,9 @@ namespace BlogWebsiteAPI.Services
            // var connString = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
             using(SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
+                conn.Open();
                 SqlCommand cmd = conn.CreateCommand();
-                cmd.CommandText = "EXEC dbo.UsernameTakeCheck @username";
+                cmd.CommandText = "EXEC dbo.UsernameTakenCheck @username";
                 cmd.Parameters.Add("@username", SqlDbType.VarChar, 50).Value = username;
                 int result;
                 try

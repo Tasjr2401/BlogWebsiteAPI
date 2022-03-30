@@ -84,4 +84,7 @@
     <None Include="Stored Procedures\Create\AddRole.sql" />
     <None Include="Stored Procedures\Create\CreateUser.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="TestScripts\DeleteUser.sql" />
+  </ItemGroup>
 </Project>
