@@ -35,24 +35,24 @@ namespace BlogWebsiteAPI.Services
 
         public int DeactivateUser(int userId, int deactivatorId, string reasonForDeactivation)
         {
-            using (SqlConnection connection = new SqlConnection(CONNECTIONSTRING))
+            using (SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
-                using (SqlCommand command = connection.CreateCommand())
+                using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    command.CommandText = "EXEC dbo.DeactivateUser @UserId, @DeactivatorId, @Date, @Reason";
-                    command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
-                    command.Parameters.Add("@DeactivatorId", SqlDbType.Int).Value = deactivatorId;
-                    command.Parameters.Add("@Date", SqlDbType.Date).Value = DateTime.Now.Date;
-                    command.Parameters.Add("@Reason", SqlDbType.VarChar, 500).Value = reasonForDeactivation;
+                    cmd.CommandText = "EXEC dbo.DeactivateUser @UserId, @DeactivatorId, @Date, @Reason";
+                    cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+                    cmd.Parameters.Add("@DeactivatorId", SqlDbType.Int).Value = deactivatorId;
+                    cmd.Parameters.Add("@Date", SqlDbType.Date).Value = DateTime.Now.Date;
+                    cmd.Parameters.Add("@Reason", SqlDbType.VarChar, 500).Value = reasonForDeactivation;
 
                     try
                     {
-                        var result =  command.ExecuteNonQuery();
-                        connection.Close();
+                        var result =  cmd.ExecuteNonQuery();
+                        conn.Close();
                         return result;
                     } catch (Exception ex)
                     {
-                        connection.Close();
+                        conn.Close();
                         throw new Exception(ex.Message, ex);
                     }
                 }
@@ -62,21 +62,22 @@ namespace BlogWebsiteAPI.Services
 
         public int DeleteUser(int userId)
         {
-            using(SqlConnection connection = new SqlConnection(CONNECTIONSTRING))
+            using(SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
-                using(SqlCommand command = connection.CreateCommand())
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    command.CommandText = "EXEC dbo.DeleteUser @UserId";
-                    command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+                    cmd.CommandText = "EXEC dbo.DeleteUser @UserId";
+                    cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
 
                     try
                     {
-                        var result = command.ExecuteNonQuery();
-                        connection.Close();
+                        var result = cmd.ExecuteNonQuery();
+                        conn.Close();
                         return result;
                     } catch(Exception ex)
                     {
-                        connection.Close();
+                        conn.Close();
                         throw new Exception(ex.Message, ex);
                     }
                 }
@@ -86,13 +87,13 @@ namespace BlogWebsiteAPI.Services
         public UserPasswordCheckModel GetPasswordVerificationRequirements(string username)
         {
             UserPasswordCheckModel passwordCheck = new UserPasswordCheckModel();
-            //var connString = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
             using (SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
+                conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "EXEC dbo.UserLogInPasswordCheck @Username";
-                    cmd.Parameters.Add("@Username", SqlDbType.VarChar, 100);
+                    cmd.Parameters.Add("@Username", SqlDbType.VarChar, 100).Value = username;
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -121,10 +122,10 @@ namespace BlogWebsiteAPI.Services
         public User GetUser(int userId)
         {
             User user = new User();
-            //var connString = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
             using (SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
-                using(SqlCommand cmd = conn.CreateCommand())
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "EXEC dbo.GetUser @UserId";
                     cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
@@ -160,7 +161,8 @@ namespace BlogWebsiteAPI.Services
             int result;
             using (SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
-                using(SqlCommand cmd = conn.CreateCommand())
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "EXEC dbo.GetUserId @Username";
                     cmd.Parameters.Add("@Username", SqlDbType.VarChar, 50).Value = username;
@@ -183,6 +185,7 @@ namespace BlogWebsiteAPI.Services
            // var connString = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
             using (SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
+                conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "EXEC dbo.GetUserRole @UserId";
@@ -238,6 +241,7 @@ namespace BlogWebsiteAPI.Services
             int result;
             using (SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
             {
+                conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "EXEC dbo.UpdateUserRole @PromoterId, @PromoteeId, @NewRole, @DateOfChange";

@@ -42,14 +42,14 @@ namespace BlogWebsiteAPI.Requests.UserRequests
 			}
 			public Task<Response> Handle(Request request, CancellationToken cancellationToken)
 			{
-				if (!_dataService.UsernameExistsCheck(request.Username))
-					return Task.FromResult(new Response(null, "User does not exist"));
-
 				var passwordCheckData = _dataService.GetPasswordVerificationRequirements(request.Username);
-				var user = _dataService.GetUser(passwordCheckData.UserId);
-
-				if (UserRequestFunctions.PasswordHash(request.Password, passwordCheckData.Salt) != passwordCheckData.HashedPassword)
+				if (passwordCheckData == null)
+					return Task.FromResult(new Response(null, "This Username does not exist"));
+				var hashedPswd = UserRequestFunctions.PasswordHash(request.Password, passwordCheckData.Salt);
+				if (hashedPswd != passwordCheckData.HashedPassword)
 					return Task.FromResult(new Response(null, "Incorrect Password"));
+
+				var user = _dataService.GetUser(passwordCheckData.UserId);
 
 				var claims = new List<Claim>()
 				{
@@ -58,8 +58,6 @@ namespace BlogWebsiteAPI.Requests.UserRequests
 					new Claim(ClaimTypes.Role, user.Role)
 				};
 
-				//var claimsIdentity = new ClaimsIdentity(claims);
-				//var principal = new ClaimsPrincipal(claimsIdentity);
 				string issuer = _config.GetSection("Token").GetSection("Issuer").Value;
 				string audience = _config.GetSection("Token").GetSection("Audience").Value;
 				var signingCredentials = new SigningCredentials(

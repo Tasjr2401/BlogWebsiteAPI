@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BlogWebsiteAPI.Services
@@ -9,7 +10,7 @@ namespace BlogWebsiteAPI.Services
 		{
 			using (var tmp = new Rfc2898DeriveBytes(password, salt))
 			{
-				return Encoding.Default.GetString(tmp.GetBytes(salt.Length));
+				return Convert.ToBase64String(tmp.GetBytes(salt.Length));
 			}
 		}
     }

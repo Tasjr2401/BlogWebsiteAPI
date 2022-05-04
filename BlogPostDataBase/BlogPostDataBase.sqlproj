@@ -86,5 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TestScripts\DeleteUser.sql" />
+    <None Include="TestScripts\CheckUserLogIn.sql" />
   </ItemGroup>
 </Project>

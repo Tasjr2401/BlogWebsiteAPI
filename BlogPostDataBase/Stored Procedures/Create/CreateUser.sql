@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[CreateUser]
+﻿ALTER PROCEDURE [dbo].[CreateUser]
 	@Username VARCHAR(30),
 	@FirstName VARCHAR(50),
 	@LastName VARCHAR(50),
@@ -8,17 +8,17 @@
 AS
 	BEGIN TRANSACTION
 	BEGIN TRY
-		DECLARE @userId AS INT
 		INSERT INTO dbo.Users (Username, FirstName, LastName, Role)
 		VALUES (@Username, @Password, @LastName, @Role);
+		
 
-		SET @userId = (
-			SELECT Id FROM dbo.Users
-			WHERE Username = @Username AND FirstName = @FirstName
-		);
+		DECLARE @userId AS INT
+		SET @userId = SCOPE_IDENTITY();
 
 		INSERT INTO dbo.UserLogIn (Username, Password, Salt, UserId)
 		VALUES (@Username, @Password, @Salt, @userId);
+
+		COMMIT
 	END TRY
 	BEGIN CATCH
 		SELECT
@@ -28,6 +28,6 @@ AS
 			ERROR_PROCEDURE() AS ErrorProcedure,
 			ERROR_LINE() AS ErrorLine,
 			ERROR_MESSAGE() AS ErrorMessage
-		ROLLBACK TRANSACTION
+		ROLLBACK
 		END CATCH
 RETURN;
