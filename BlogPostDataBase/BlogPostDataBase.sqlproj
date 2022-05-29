@@ -78,6 +78,7 @@
     <None Include="Tables\DeactivatedUsers.sql" />
     <None Include="Stored Procedures\Delete\DeactivateUser.sql" />
     <None Include="Stored Procedures\Delete\DeleteUser.sql" />
+    <Build Include="Stored Procedures\Get\GetUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="TestScripts\GetRole.sql" />
@@ -87,5 +88,6 @@
   <ItemGroup>
     <None Include="TestScripts\DeleteUser.sql" />
     <None Include="TestScripts\CheckUserLogIn.sql" />
+    <None Include="TestScripts\RoleJoinTest.sql" />
   </ItemGroup>
 </Project>

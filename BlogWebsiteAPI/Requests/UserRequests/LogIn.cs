@@ -43,7 +43,7 @@ namespace BlogWebsiteAPI.Requests.UserRequests
 			public Task<Response> Handle(Request request, CancellationToken cancellationToken)
 			{
 				var passwordCheckData = _dataService.GetPasswordVerificationRequirements(request.Username);
-				if (passwordCheckData == null)
+				if (passwordCheckData.UserId == 0)
 					return Task.FromResult(new Response(null, "This Username does not exist"));
 				var hashedPswd = UserRequestFunctions.PasswordHash(request.Password, passwordCheckData.Salt);
 				if (hashedPswd != passwordCheckData.HashedPassword)

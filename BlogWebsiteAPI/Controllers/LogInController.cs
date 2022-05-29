@@ -50,9 +50,9 @@ namespace BlogWebsiteAPI.Controllers
 		[HttpGet]
 		[Route("UserInfo")]
 		[Authorize]
-		public Task<UserInfo.Response> UserInfo()
+		public async Task<IActionResult> UserInfo()
 		{
-			return _mediator.Send(new UserInfo.Request());
+			return Ok(await _mediator.Send(new UserInfo.Request()));
 		}
 
 		[HttpGet]

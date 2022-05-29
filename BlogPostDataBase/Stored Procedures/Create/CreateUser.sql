@@ -9,7 +9,7 @@ AS
 	BEGIN TRANSACTION
 	BEGIN TRY
 		INSERT INTO dbo.Users (Username, FirstName, LastName, Role)
-		VALUES (@Username, @Password, @LastName, @Role);
+		VALUES (@Username, @FirstName, @LastName, @Role);
 		
 
 		DECLARE @userId AS INT
