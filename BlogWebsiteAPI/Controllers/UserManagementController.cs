@@ -49,5 +49,13 @@ namespace BlogWebsiteAPI.Controllers
                 return BadRequest("Request was empty");
             return Ok(await _mediator.Send(request));
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("UserSearch")]
+        public async Task<IActionResult> SearchForUser(SearchUser.Request request)
+        {
+
+        }
     }
 }
