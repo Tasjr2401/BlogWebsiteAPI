@@ -33,12 +33,9 @@ namespace BlogWebsiteAPI.Requests.UserRequests.LogInUserTests
             LogIn.Handler handler = new LogIn.Handler(_config.Object, _dataService.Object);
             var salt = RandomNumberGenerator.GetBytes(12);
             var hashedPassword = UserRequestFunctions.PasswordHash(password, salt);
-
-            _dataService.Setup(x => x.UsernameExistsCheck(It.IsAny<string>()))
-                .Returns(true)
-                .Verifiable();
+            var passCheckModel = new UserPasswordCheckModel(hashedPassword, salt, 1);
             _dataService.Setup(x => x.GetPasswordVerificationRequirements(It.IsAny<string>()))
-                .Returns(new UserPasswordCheckModel(hashedPassword, salt, It.IsAny<int>()))
+                .Returns(passCheckModel)
                 .Verifiable();
             _dataService.Setup(x => x.GetUser(It.IsAny<int>()))
                 .Returns(new User("KazraiTheRat123!", "Aviet", "Darbi", "Admin"))
@@ -60,7 +57,6 @@ namespace BlogWebsiteAPI.Requests.UserRequests.LogInUserTests
             Assert.IsTrue(result.Token != null && result.ErrorMessage == null);
 
             //Verify
-            _dataService.Verify(x => x.UsernameExistsCheck(It.IsAny<string>()), Times.Once);
             _dataService.Verify(x => x.GetPasswordVerificationRequirements(It.IsAny<string>()), Times.Once);
             _dataService.Verify(x => x.GetUser(It.IsAny<int>()), Times.Once);
 
@@ -79,11 +75,8 @@ namespace BlogWebsiteAPI.Requests.UserRequests.LogInUserTests
             var salt = RandomNumberGenerator.GetBytes(12);
             var hashedPassword = UserRequestFunctions.PasswordHash(password, salt);
 
-            _dataService.Setup(x => x.UsernameExistsCheck(It.IsAny<string>()))
-                .Returns(false)
-                .Verifiable();
             _dataService.Setup(x => x.GetPasswordVerificationRequirements(It.IsAny<string>()))
-                .Returns(new UserPasswordCheckModel(hashedPassword, salt, It.IsAny<int>()))
+                .Returns(new UserPasswordCheckModel(hashedPassword, salt, 0))
                 .Verifiable();
             _dataService.Setup(x => x.GetUser(It.IsAny<int>()))
                 .Returns(new User("KazraiTheRat123!", "Aviet", "Darbi", "Admin"))
@@ -105,8 +98,7 @@ namespace BlogWebsiteAPI.Requests.UserRequests.LogInUserTests
             Assert.IsTrue(result.Token == null && result.ErrorMessage != null);
 
             //Verify
-            _dataService.Verify(x => x.UsernameExistsCheck(It.IsAny<string>()), Times.Once);
-            _dataService.Verify(x => x.GetPasswordVerificationRequirements(It.IsAny<string>()), Times.Never);
+            _dataService.Verify(x => x.GetPasswordVerificationRequirements(It.IsAny<string>()), Times.Once);
             _dataService.Verify(x => x.GetUser(It.IsAny<int>()), Times.Never);
 
             _config.Verify(c => c.GetSection("Token").GetSection("Issuer").Value, Times.Never);
@@ -122,14 +114,10 @@ namespace BlogWebsiteAPI.Requests.UserRequests.LogInUserTests
             LogIn.Request request = new LogIn.Request("KazraiTheRat123!", password);
             LogIn.Handler handler = new LogIn.Handler(_config.Object, _dataService.Object);
             var salt = RandomNumberGenerator.GetBytes(12);
-            var wrongSalt = RandomNumberGenerator.GetBytes(10);
-            var hashedPassword = UserRequestFunctions.PasswordHash(password, salt);
+            var hashedPassword = UserRequestFunctions.PasswordHash("SomeIncorrectUsername", salt);
 
-            _dataService.Setup(x => x.UsernameExistsCheck(It.IsAny<string>()))
-                .Returns(true)
-                .Verifiable();
             _dataService.Setup(x => x.GetPasswordVerificationRequirements(It.IsAny<string>()))
-                .Returns(new UserPasswordCheckModel(hashedPassword, wrongSalt, It.IsAny<int>()))
+                .Returns(new UserPasswordCheckModel(hashedPassword, salt, 1))
                 .Verifiable();
             _dataService.Setup(x => x.GetUser(It.IsAny<int>()))
                 .Returns(new User("KazraiTheRat123!", "Aviet", "Darbi", "Admin"))
@@ -151,9 +139,8 @@ namespace BlogWebsiteAPI.Requests.UserRequests.LogInUserTests
             Assert.IsTrue(result.Token == null && result.ErrorMessage != null);
 
             //Verify
-            _dataService.Verify(x => x.UsernameExistsCheck(It.IsAny<string>()), Times.Once);
             _dataService.Verify(x => x.GetPasswordVerificationRequirements(It.IsAny<string>()), Times.Once);
-            _dataService.Verify(x => x.GetUser(It.IsAny<int>()), Times.Once);
+            _dataService.Verify(x => x.GetUser(It.IsAny<int>()), Times.Never);
 
             _config.Verify(c => c.GetSection("Token").GetSection("Issuer").Value, Times.Never);
             _config.Verify(c => c.GetSection("Token").GetSection("Audience").Value, Times.Never);
