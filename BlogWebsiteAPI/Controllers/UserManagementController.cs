@@ -53,9 +53,11 @@ namespace BlogWebsiteAPI.Controllers
         [HttpGet]
         [Authorize]
         [Route("UserSearch")]
-        public async Task<IActionResult> SearchForUser(SearchUser.Request request)
+        public async Task<IActionResult> SearchForUser(UserSearch.Request request)
         {
-
+            if (request == null)
+                return BadRequest("Request was empty");
+            return Ok(await _mediator.Send(request));
         }
     }
 }
