@@ -79,6 +79,7 @@
     <None Include="Stored Procedures\Delete\DeactivateUser.sql" />
     <None Include="Stored Procedures\Delete\DeleteUser.sql" />
     <Build Include="Stored Procedures\Get\GetUser.sql" />
+    <Build Include="Stored Procedures\Get\SearchForUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="TestScripts\GetRole.sql" />

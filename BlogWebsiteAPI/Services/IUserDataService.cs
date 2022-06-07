@@ -4,6 +4,7 @@ using BlogWebsiteAPI.Requests.UserRequests;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -20,6 +21,7 @@ namespace BlogWebsiteAPI.Services
         public int UpdateUserRole(int promoterId, int userId, string newRole);
         public int DeactivateUser(int userId, int deactivatorId, string reasonForDeactivation);
         public int DeleteUser(int userId);
+        public List<User> SearchUser(string search);
     }
 
     public class SqlUserDataService : IUserDataService
@@ -235,7 +237,47 @@ namespace BlogWebsiteAPI.Services
             }
         }
 
-        public int UpdateUserRole(int promoterId, int userId, string newRole)
+		public List<User> SearchUser(string search)
+		{
+            List<User> users = new List<User>();
+            using(SqlConnection conn = new SqlConnection(CONNECTIONSTRING))
+			{
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "EXEC dbo.SearchForUser @Search";
+                    cmd.Parameters.Add("@Search", SqlDbType.VarChar).Value = search + "%";
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        try
+                        {
+                            while (reader.Read())
+                            {
+                                User user = new User();
+
+                                user.Username = (string)reader["Username"];
+                                user.FirstName = (string)reader["FirstName"];
+                                user.LastName = (string)reader["LastName"];
+                                user.Role = (string)reader["Role"];
+
+                                users.Add(user);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            reader.CloseAsync();
+                            conn.Close();
+                            throw new Exception(ex.Message, ex);
+                        }
+                        reader.Close();
+                    }
+                }
+                conn.Close();
+			}
+            return users;
+		}
+
+		public int UpdateUserRole(int promoterId, int userId, string newRole)
         {
             //var connString = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
             int result;
