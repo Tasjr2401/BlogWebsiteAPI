@@ -5,6 +5,7 @@ using MediatR;
 using BlogWebsiteAPI.Requests.UserRequests;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using BlogWebsiteAPI.Services;
 
 namespace BlogWebsiteAPI.Controllers
 {
@@ -14,9 +15,12 @@ namespace BlogWebsiteAPI.Controllers
     public class UserManagementController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public UserManagementController(IMediator mediator)
+		private readonly IKeyVaultManagement _secretManager;
+
+		public UserManagementController(IMediator mediator, IKeyVaultManagement secretManager)
         {
             _mediator = mediator;
+            _secretManager = secretManager;
         }
 
         [HttpPost]
@@ -59,5 +63,16 @@ namespace BlogWebsiteAPI.Controllers
                 return BadRequest("Request was empty");
             return Ok(await _mediator.Send(request));
         }
+
+#if DEBUG
+		[HttpGet]
+		[Route("TestVaultSecret")]
+        public async Task<IActionResult> TestVaultSecret([FromQuery]string secretName)
+        {
+            if (secretName == null)
+                return BadRequest("Request was empty");
+            return Ok(await _secretManager.GetSecret(secretName));
+        }
+#endif
     }
 }

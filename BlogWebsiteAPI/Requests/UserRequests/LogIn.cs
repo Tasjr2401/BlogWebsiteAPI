@@ -42,6 +42,8 @@ namespace BlogWebsiteAPI.Requests.UserRequests
 			}
 			public Task<Response> Handle(Request request, CancellationToken cancellationToken)
 			{
+
+
 				var passwordCheckData = _dataService.GetPasswordVerificationRequirements(request.Username);
 				if (passwordCheckData.UserId <= 0)
 					return Task.FromResult(new Response(null, "This Username does not exist"));

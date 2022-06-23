@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "secretStore": null,
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/BlogWebsiteAPIvault",
+      "type": "secrets.keyVault",
+      "connectionId": "BlogVaultUri"
+    },
+    "mssql1": {
+      "secretStore": "AzureKeyVault",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/journeymerchandise/databases/BlogPostDataBase",
+      "type": "mssql.azure",
+      "connectionId": "BlogWebsiteConnection"
+    }
+  }
+}

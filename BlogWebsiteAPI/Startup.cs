@@ -21,6 +21,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BlogWebsiteAPI.Requests.UserRequests;
 using BlogWebsiteAPI.Services;
+using Microsoft.Extensions.Azure;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 namespace BlogWebsiteAPI
 {
@@ -41,8 +44,20 @@ namespace BlogWebsiteAPI
 			services.AddMediatR(typeof(LogIn.Handler).Assembly);
 
 			services.AddTransient<IUserDataService, SqlUserDataService>();
+			services.AddTransient<IKeyVaultManagement, KeyVaultManager>();
 
 			services.AddHttpContextAccessor();
+
+			// This section should go in a key vault provider
+			var options = new DefaultAzureCredentialOptions
+			{
+				ExcludeSharedTokenCacheCredential = true,
+				SharedTokenCacheTenantId = Configuration.GetSection("KeyVault").GetSection("TenantID").Value
+			};
+
+			var secretClient = new SecretClient(new Uri("https://blogwebsiteapivault.vault.azure.net/"), new DefaultAzureCredential(options));
+			services.AddSingleton<SecretClient>(c => secretClient); // Probably don't do this mmk?
+			// End section
 
 			services.AddCors(c =>
 			{

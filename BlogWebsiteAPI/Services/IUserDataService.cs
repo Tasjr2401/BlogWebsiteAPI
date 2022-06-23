@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Azure.Security.KeyVault.Secrets;
 
 namespace BlogWebsiteAPI.Services
 {
@@ -28,12 +29,16 @@ namespace BlogWebsiteAPI.Services
     {
         private readonly string CONNECTIONSTRING;
         private readonly IConfiguration _config;
+        private readonly IKeyVaultManagement _keyManager;
 
-        public SqlUserDataService(IConfiguration config)
-        {
-            _config = config;
-            CONNECTIONSTRING = _config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
-        }
+        public SqlUserDataService(IConfiguration config, IKeyVaultManagement keyManager)
+		{
+
+			_config = config;
+            _keyManager = keyManager;
+            CONNECTIONSTRING = _keyManager.GetSecret("BlogWebsiteConnection").Result; //_config.GetSection("DataBase").GetSection("SqlConnectionString").Value;
+		}
+
 
         public int DeactivateUser(int userId, int deactivatorId, string reasonForDeactivation)
         {

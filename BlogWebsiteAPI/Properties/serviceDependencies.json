@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "BlogVaultUri"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "BlogWebsiteConnection"
+    }
+  }
+}
