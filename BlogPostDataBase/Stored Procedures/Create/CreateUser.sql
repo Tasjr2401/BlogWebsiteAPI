@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE [dbo].[CreateUser]
+﻿CREATE PROCEDURE [dbo].[CreateUser]
 	@Username VARCHAR(30),
 	@FirstName VARCHAR(50),
 	@LastName VARCHAR(50),

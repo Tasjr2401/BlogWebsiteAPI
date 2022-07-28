@@ -9,8 +9,7 @@
     <ProjectGuid>{2bd8f579-f387-458e-8be9-dd98211dfb41}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>BlogPostDataBase</RootNamespace>
     <AssemblyName>BlogPostDataBase</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
@@ -48,7 +47,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -65,7 +63,7 @@
     <Folder Include="Stored Procedures\Delete" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\Roles.sql" />
+    <None Include="Tables\Roles.sql" />
     <None Include="Tables\UserLogIn.sql" />
     <None Include="Tables\Users.sql" />
     <None Include="TestScripts\GetAllRoles.sql" />
@@ -73,13 +71,13 @@
     <None Include="Stored Procedures\Get\UsernameTakenCheck.sql" />
     <None Include="Stored Procedures\Get\GetUserId.sql" />
     <None Include="Stored Procedures\Get\GetUserRole.sql" />
-    <Build Include="Stored Procedures\Update\UpdateUserRole.sql" />
+    <None Include="Stored Procedures\Update\UpdateUserRole.sql" />
     <None Include="Tables\RoleUpdate.sql" />
     <None Include="Tables\DeactivatedUsers.sql" />
     <None Include="Stored Procedures\Delete\DeactivateUser.sql" />
     <None Include="Stored Procedures\Delete\DeleteUser.sql" />
-    <Build Include="Stored Procedures\Get\GetUser.sql" />
-    <Build Include="Stored Procedures\Get\SearchForUser.sql" />
+    <None Include="Stored Procedures\Get\GetUser.sql" />
+    <None Include="Stored Procedures\Get\SearchForUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="TestScripts\GetRole.sql" />
