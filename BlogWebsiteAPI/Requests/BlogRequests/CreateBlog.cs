@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using BlogWebsiteAPI.Models;
+using BlogWebsiteAPI.Services;
 
 namespace BlogWebsiteAPI.Requests.BlogRequest
 {
@@ -22,18 +23,24 @@ namespace BlogWebsiteAPI.Requests.BlogRequest
 		public class Handler : IRequestHandler<Request, Response>
 		{
 			private readonly IMediator _mediator;
+			private readonly IBlogDataService _blogService;
 
-			public Handler(IMediator mediator)
+			public Handler(IMediator mediator, IBlogDataService blogService)
 			{
 				_mediator = mediator;
+				_blogService = blogService;
 			}
 			public Task<Response> Handle(Request request, CancellationToken cancellationToken)
 			{
 				UserInfo.Response user = _mediator.Send(request.RequestContext).Result;
 
-				Blog blog = new Blog(request.BlogTitle, user.Name, request.BlogContent, DateTime.Now);
+				var blogId = _blogService.CreateBlog(request.BlogTitle, user.UserId, request.BlogContent);
+				if (blogId == 0) throw new Exception("Blog not posted no Id found.");
 
-				//make a dataservice reference to post to sql server
+				var blog = _blogService.GetBlogById(blogId);
+				if (blog == null) throw new Exception("Blog not found");
+
+				return Task.FromResult(new Response(blog));
 
 				throw new NotImplementedException();
 			}
@@ -41,7 +48,11 @@ namespace BlogWebsiteAPI.Requests.BlogRequest
 
 		public class Response
 		{
-			public int BlogId { get; set; }
+			public Response(Blog blogInput)
+			{
+				blog = blogInput;
+			}
+			public Blog blog { get; set; }
 		}
 	}
 }

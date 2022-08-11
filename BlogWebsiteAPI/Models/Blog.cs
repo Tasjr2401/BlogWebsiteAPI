@@ -5,17 +5,33 @@ namespace BlogWebsiteAPI.Models
 {
 	public class Blog
 	{
-		public Blog(string title, string author, string content, DateTime creationTime)
+		public Blog(int id, string title, int authorId, string content, DateTime creationTime)
 		{
+			Id = id;
 			Title = title;
-			Author = author;
+			AuthorId = authorId;
 			Content = content;
 			CreationTime = creationTime;
 		}
-
+		public int Id { get; set; }
 		public string Title { get; set; }
-		public string Author { get; set; }
+		public int AuthorId { get; set; }
 		public string Content { get; set; }
 		public DateTime CreationTime { get; set; }
+	}
+
+	public class BlogPreview
+	{
+		public int Id { get; set; }
+		public string Title { get; set; }
+		public string AuthorName { get; set; } 
+		public DateTime CreationTime { get; set; }
+		public BlogPreview(int id, string title, string authorName, DateTime creationTime)
+		{
+			Id = id;
+			Title = title;
+			AuthorName = authorName;
+			CreationTime = creationTime;
+		}
 	}
 }

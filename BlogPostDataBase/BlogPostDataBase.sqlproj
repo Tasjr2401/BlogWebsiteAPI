@@ -83,6 +83,9 @@
     <Build Include="TestScripts\GetRole.sql" />
     <None Include="Stored Procedures\Create\AddRole.sql" />
     <None Include="Stored Procedures\Create\CreateUser.sql" />
+    <None Include="Tables\Blog.sql" />
+    <None Include="Stored Procedures\Create\CreateBlog.sql" />
+    <None Include="Stored Procedures\Get\GetBlogById.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestScripts\DeleteUser.sql" />

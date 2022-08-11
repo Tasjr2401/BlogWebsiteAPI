@@ -57,7 +57,8 @@ namespace BlogWebsiteAPI.Requests.UserRequests
 				{
 					new Claim(ClaimTypes.NameIdentifier, request.Username),
 					new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-					new Claim(ClaimTypes.Role, user.Role)
+					new Claim(ClaimTypes.Role, user.Role),
+					new Claim("UserId", user.Id.ToString())
 				};
 
 				string issuer = _config.GetSection("Token").GetSection("Issuer").Value;

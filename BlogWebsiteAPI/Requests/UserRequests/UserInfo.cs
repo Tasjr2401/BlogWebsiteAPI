@@ -53,7 +53,7 @@ namespace BlogWebsiteAPI.Requests
 				var token = headerValue.Parameter;
 				SecurityToken outToken;
 				var value = tokenHandler.ValidateToken(token, valdiationParams, out outToken);
-				return Task.FromResult(new Response(value.FindFirstValue(ClaimTypes.Name), value.FindFirstValue(ClaimTypes.NameIdentifier), value.FindFirstValue(ClaimTypes.Role)));
+				return Task.FromResult(new Response(value.FindFirstValue(ClaimTypes.Name), value.FindFirstValue(ClaimTypes.NameIdentifier), value.FindFirstValue(ClaimTypes.Role), int.Parse(value.FindFirstValue("UserId"))));
 			}
 		}
 
@@ -62,11 +62,13 @@ namespace BlogWebsiteAPI.Requests
 			public string Name { get; set; }
             public string Username { get; set; }
             public string Role { get; set; }
-            public Response(string name, string username, string role)
+			public int UserId { get; set; }
+			public Response(string name, string username, string role, int id)
 			{
 				Name = name;
 				Username = username;
 				Role = role;
+				UserId = id;
 			}
 		}
 	}
